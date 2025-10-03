@@ -17,6 +17,23 @@ A comprehensive PHP wrapper for the Dintero payment provider with seamless Larav
 - 📊 **Logging** - Comprehensive request/response logging
 - 🧪 **Thoroughly Tested** - Comprehensive test suite
 
+### Core Payment Features
+- **Payment Sessions** - Create and manage checkout sessions
+- **Split Payouts** - Marketplace payments with multiple recipients
+- **Payment Links** - Generate payment URLs and QR codes
+- **Recurring Billing** - Subscription and invoice management
+- **Virtual Cards** - Gift cards, vouchers, and wallet functionality
+- **Loyalty Programs** - Discount codes, points, and stamp cards
+- **Transaction Management** - Direct transaction control and monitoring
+
+### Advanced Features
+- **Comprehensive Reporting** - Revenue, analytics, and reconciliation reports
+- **Profile Management** - Merchant settings and checkout configuration  
+- **Multi-currency Support** - Handle payments in multiple currencies
+- **Fraud Protection** - Risk analysis and fraud detection
+- **Real-time Events** - Webhook handling for instant notifications
+- **API Versioning** - Support for different API versions
+
 ## Installation
 
 Install the package via Composer:
@@ -144,6 +161,215 @@ $sessions = $dintero->paymentSessions->list();
 foreach ($dintero->paymentSessions->all() as $session) {
     // Process each session
 }
+```
+
+### Split Payouts (Marketplace)
+
+```php
+// Create split payout for marketplace
+$splits = [
+    ['recipient_id' => 'seller_123', 'amount' => 7000],
+    ['recipient_id' => 'platform', 'amount' => 3000]
+];
+$payout = $dintero->payouts->createSplit('transaction_123', $splits);
+
+// Create payout with multiple recipients
+$recipients = [
+    ['recipient_id' => 'seller_1', 'amount' => 5000],
+    ['recipient_id' => 'seller_2', 'amount' => 3000]
+];
+$payout = $dintero->payouts->createWithRecipients($recipients);
+
+// Get payout status
+$status = $dintero->payouts->getStatus('payout-id');
+
+// Download payout report
+$report = $dintero->payouts->downloadReport('report-id', 'csv');
+```
+
+### Payment Links & QR Codes
+
+```php
+// Create quick payment link
+$link = $dintero->paymentLinks->createQuick(10000, 'NOK', [
+    'description' => 'Invoice payment',
+    'expires_at' => '2024-12-31 23:59:59'
+]);
+
+// Generate QR code for payment link
+$qrCode = $dintero->paymentLinks->getQrCode('link-id', [
+    'size' => '300x300',
+    'format' => 'png'
+]);
+
+// Create recurring payment link
+$recurringLink = $dintero->paymentLinks->createRecurring([
+    'amount' => 29900,
+    'currency' => 'NOK',
+    'interval' => 'monthly'
+]);
+
+// Share payment link via email
+$dintero->paymentLinks->shareViaEmail('link-id', [
+    'recipient_email' => 'customer@example.com',
+    'subject' => 'Payment Request'
+]);
+```
+
+### Subscription & Billing
+
+```php
+// Create subscription
+$subscription = $dintero->billing->createSubscription([
+    'customer_id' => 'customer-123',
+    'plan_id' => 'premium-plan',
+    'trial_period_days' => 14
+]);
+
+// Create billing plan
+$plan = $dintero->billing->createPlan([
+    'name' => 'Premium Plan',
+    'amount' => 29900,
+    'currency' => 'NOK',
+    'interval' => 'monthly'
+]);
+
+// Cancel subscription
+$dintero->billing->cancelSubscription('subscription-id');
+
+// Create and send invoice
+$invoice = $dintero->billing->createInvoice($invoiceData);
+$dintero->billing->sendInvoice('invoice-id');
+```
+
+### Virtual Cards & Gift Cards
+
+```php
+// Create gift card
+$giftCard = $dintero->cards->createGiftCard(50000, [
+    'currency' => 'NOK',
+    'recipient_email' => 'recipient@example.com',
+    'message' => 'Happy Birthday!'
+]);
+
+// Create virtual card
+$virtualCard = $dintero->cards->create([
+    'type' => 'virtual',
+    'initial_balance' => 25000,
+    'currency' => 'NOK'
+]);
+
+// Load balance to card
+$dintero->cards->loadBalance('card-id', 10000);
+
+// Reserve amount on card
+$reservation = $dintero->cards->reserve('card-id', 5000);
+
+// Capture reserved amount
+$dintero->cards->capture('card-id', 'reservation-id');
+```
+
+### Loyalty & Discounts
+
+```php
+// Create discount code
+$discount = $dintero->loyalty->createDiscount([
+    'code' => 'SAVE20',
+    'type' => 'percentage',
+    'value' => 20,
+    'minimum_amount' => 10000
+]);
+
+// Award loyalty points
+$dintero->loyalty->awardPoints('customer-id', 100, [
+    'reason' => 'Purchase reward'
+]);
+
+// Create stamp card
+$stampCard = $dintero->loyalty->createStampCard([
+    'name' => 'Coffee Loyalty Card',
+    'stamps_required' => 10,
+    'reward_description' => 'Free coffee'
+]);
+
+// Add stamp to card
+$dintero->loyalty->addStamp('stamp-card-id');
+```
+
+### Transaction Management
+
+```php
+// Get transaction
+$transaction = $dintero->transactions->get('transaction-id');
+
+// Capture transaction
+$capture = $dintero->transactions->capture('transaction-id', [
+    'amount' => 8000 // Partial capture
+]);
+
+// Void transaction
+$void = $dintero->transactions->void('transaction-id', 'Customer request');
+
+// Get transaction events
+$events = $dintero->transactions->getEvents('transaction-id');
+
+// Check transaction status
+$isSuccessful = $dintero->transactions->isSuccessful('transaction-id');
+```
+
+### Reporting & Analytics
+
+```php
+// Get revenue reports
+$revenue = $dintero->reports->getRevenueReports([
+    'start_date' => '2024-01-01',
+    'end_date' => '2024-01-31',
+    'group_by' => 'day'
+]);
+
+// Get dashboard analytics
+$analytics = $dintero->reports->getDashboardAnalytics([
+    'period' => 'last_30_days'
+]);
+
+// Generate custom report
+$report = $dintero->reports->generateCustomReport([
+    'metrics' => ['revenue', 'transactions'],
+    'filters' => ['currency' => 'NOK']
+]);
+
+// Schedule report
+$schedule = $dintero->reports->scheduleReport([
+    'type' => 'revenue',
+    'frequency' => 'weekly',
+    'email' => 'admin@example.com'
+]);
+```
+
+### Profile & Configuration
+
+```php
+// Get merchant profile
+$profile = $dintero->profiles->get();
+
+// Update checkout configuration
+$config = $dintero->profiles->updateCheckoutConfig([
+    'theme' => 'dark',
+    'primary_color' => '#007bff',
+    'logo_url' => 'https://example.com/logo.png'
+]);
+
+// Get payment methods
+$methods = $dintero->profiles->getPaymentMethods();
+
+// Enable payment method
+$dintero->profiles->enablePaymentMethod('vipps');
+
+// Update branding
+$dintero->profiles->updateBranding([
+    'company_name' => 'My Company',
+    'primary_color' => '#ff6b35'
+]);
 ```
 
 ### Fluent Payment Session Builder
