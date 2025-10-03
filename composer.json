@@ -1,0 +1,65 @@
+{
+    "name": "andreaskviby/dintero-php-wrapper",
+    "description": "Comprehensive PHP wrapper for Dintero payment provider with Laravel integration",
+    "keywords": ["dintero", "payment", "php", "laravel", "wrapper", "api"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andreas Kviby",
+            "email": "andreas@kviby.com"
+        }
+    ],
+    "require": {
+        "php": "^8.1",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "guzzlehttp/guzzle": "^7.5",
+        "illuminate/support": "^9.0|^10.0|^11.0",
+        "illuminate/contracts": "^9.0|^10.0|^11.0",
+        "nesbot/carbon": "^2.66",
+        "ramsey/uuid": "^4.7"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5|^10.0",
+        "mockery/mockery": "^1.5",
+        "orchestra/testbench": "^7.0|^8.0|^9.0",
+        "phpstan/phpstan": "^1.10",
+        "squizlabs/php_codesniffer": "^3.7"
+    },
+    "autoload": {
+        "psr-4": {
+            "Dintero\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Dintero\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "phpstan": "vendor/bin/phpstan analyse",
+        "cs-check": "vendor/bin/phpcs",
+        "cs-fix": "vendor/bin/phpcbf"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Dintero\\Laravel\\DinteroServiceProvider"
+            ],
+            "aliases": {
+                "Dintero": "Dintero\\Laravel\\Facades\\Dintero"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
