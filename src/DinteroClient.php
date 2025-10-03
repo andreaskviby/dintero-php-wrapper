@@ -20,6 +20,8 @@ use Dintero\Resources\Cards;
 use Dintero\Resources\Loyalty;
 use Dintero\Resources\Reports;
 use Dintero\Resources\Profiles;
+use Dintero\Resources\Receipts;
+use Dintero\Resources\Settings;
 use Dintero\Support\Configuration;
 
 /**
@@ -44,6 +46,8 @@ class DinteroClient implements DinteroClientInterface
     public readonly Loyalty $loyalty;
     public readonly Reports $reports;
     public readonly Profiles $profiles;
+    public readonly Receipts $receipts;
+    public readonly Settings $settings;
 
     public function __construct(array $config = [])
     {
@@ -64,6 +68,8 @@ class DinteroClient implements DinteroClientInterface
         $this->loyalty = new Loyalty($this->httpClient);
         $this->reports = new Reports($this->httpClient);
         $this->profiles = new Profiles($this->httpClient);
+        $this->receipts = new Receipts($this->httpClient);
+        $this->settings = new Settings($this->httpClient);
     }
 
     public function getConfig(): Configuration
