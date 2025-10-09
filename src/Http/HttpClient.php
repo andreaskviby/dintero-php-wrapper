@@ -182,4 +182,56 @@ class HttpClient implements HttpClientInterface
     {
         return $this->accessToken;
     }
+
+    /**
+     * Get the configuration instance
+     */
+    public function getConfig(): Configuration
+    {
+        return $this->config;
+    }
+
+    /**
+     * Make a request to a specific base URL
+     */
+    public function requestWithBaseUrl(string $method, string $endpoint, string $baseUrl, array $options = []): HttpResponseInterface
+    {
+        $endpoint = ltrim($endpoint, '/');
+        $options = array_merge($options, [
+            'headers' => $this->getHeaders(),
+        ]);
+
+        // Create a new client with the specified base URL
+        $client = new Client([
+            'base_uri' => $baseUrl,
+            'timeout' => $this->config->get('timeout', 30),
+            'headers' => [
+                'User-Agent' => $this->config->get('user_agent', 'Dintero PHP Wrapper/1.0'),
+                'Accept' => 'application/json',
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        $retryAttempts = $this->config->get('retry_attempts', 3);
+        $retryDelay = $this->config->get('retry_delay', 1000);
+
+        for ($attempt = 0; $attempt <= $retryAttempts; $attempt++) {
+            try {
+                $response = $client->request($method, $endpoint, $options);
+                return $this->createResponse($response);
+            } catch (RequestException $e) {
+                if ($attempt === $retryAttempts || !$this->shouldRetry($e)) {
+                    $this->handleException($e);
+                }
+                
+                if ($attempt < $retryAttempts) {
+                    usleep($retryDelay * 1000 * ($attempt + 1)); // Exponential backoff
+                }
+            } catch (GuzzleException $e) {
+                throw new DinteroException('HTTP request failed: ' . $e->getMessage(), 0, $e);
+            }
+        }
+
+        throw new DinteroException('Max retry attempts exceeded');
+    }
 }
