@@ -49,6 +49,11 @@ class Configuration
         return $this->get('client_secret');
     }
 
+    public function getAudience(): ?string
+    {
+        return $this->get('audience');
+    }
+
     public function getBaseUrl(): string
     {
         return $this->get('base_url');
@@ -76,6 +81,7 @@ class Configuration
             'api_key' => env('DINTERO_API_KEY'),
             'client_id' => env('DINTERO_CLIENT_ID'),
             'client_secret' => env('DINTERO_CLIENT_SECRET'),
+            'audience' => env('DINTERO_AUDIENCE'),
             'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1'),
             'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1'),
             'timeout' => env('DINTERO_TIMEOUT', 30),
