@@ -61,6 +61,9 @@ DINTERO_API_KEY=your_api_key_here
 DINTERO_CLIENT_ID=your_client_id
 DINTERO_CLIENT_SECRET=your_client_secret
 
+# Optional: Account ID (for sandbox, use T- prefix or let the wrapper add it automatically)
+DINTERO_ACCOUNT_ID=your_account_id
+
 # Webhook configuration
 DINTERO_WEBHOOK_SECRET=your_webhook_secret
 ```
@@ -75,6 +78,7 @@ use Dintero\DinteroClient;
 $dintero = new DinteroClient([
     'environment' => 'sandbox', // or 'production'
     'api_key' => 'your_api_key_here',
+    'account_id' => 'your_account_id', // Optional: for sandbox, T- prefix will be added automatically
 ]);
 
 // Test connection
@@ -527,11 +531,39 @@ DINTERO_CLIENT_ID=your_client_id
 DINTERO_CLIENT_SECRET=your_client_secret
 
 # Optional
+DINTERO_ACCOUNT_ID=your_account_id  # Account ID (T- prefix added automatically for sandbox)
 DINTERO_TIMEOUT=30
 DINTERO_RETRY_ATTEMPTS=3
 DINTERO_LOG_REQUESTS=false
 DINTERO_WEBHOOK_SECRET=your_webhook_secret
 DINTERO_DEFAULT_CURRENCY=NOK
+```
+
+### Sandbox vs Production
+
+The wrapper uses the same API URL (`https://api.dintero.com/v1`) for both environments. For sandbox testing:
+
+- Set `DINTERO_ENVIRONMENT=sandbox`
+- Use your account ID with or without the `T-` prefix - the wrapper will automatically add the `T-` prefix for sandbox environments
+- For production, the wrapper will remove any `T-` prefix from the account ID
+
+```php
+// Sandbox configuration - both of these work the same way:
+$sandboxConfig1 = [
+    'environment' => 'sandbox',
+    'account_id' => 'ACCOUNT123',  // Will become 'T-ACCOUNT123'
+];
+
+$sandboxConfig2 = [
+    'environment' => 'sandbox', 
+    'account_id' => 'T-ACCOUNT123',  // Stays 'T-ACCOUNT123'
+];
+
+// Production configuration
+$productionConfig = [
+    'environment' => 'production',
+    'account_id' => 'ACCOUNT123',  // Stays 'ACCOUNT123'
+];
 ```
 
 ### Configuration Array
@@ -540,6 +572,7 @@ DINTERO_DEFAULT_CURRENCY=NOK
 $config = [
     'environment' => 'sandbox',
     'api_key' => 'your_api_key',
+    'account_id' => 'your_account_id',
     'timeout' => 30,
     'retry_attempts' => 3,
     'log_requests' => true,
