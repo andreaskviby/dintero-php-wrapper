@@ -33,8 +33,8 @@ return [
     | The base URLs for Dintero API endpoints.
     |
     */
-    'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1'),
-    'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1'),
+    'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1/'),
+    'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1/'),
 
     /*
     |--------------------------------------------------------------------------
