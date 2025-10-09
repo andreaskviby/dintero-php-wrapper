@@ -27,14 +27,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | API URLs
+    | API Configuration
     |--------------------------------------------------------------------------
     |
-    | The base URLs for Dintero API endpoints.
+    | The base URL for Dintero API endpoints and account configuration.
+    | For sandbox testing, use account IDs with 'T-' prefix.
     |
     */
     'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1'),
-    'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1'),
+    'account_id' => env('DINTERO_ACCOUNT_ID'),
 
     /*
     |--------------------------------------------------------------------------
