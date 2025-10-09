@@ -56,6 +56,7 @@ Add to your `.env` file:
 ```env
 DINTERO_ENVIRONMENT=sandbox
 DINTERO_API_KEY=your_api_key_here
+DINTERO_ACCOUNT_ID=your_account_id  # Optional: Account ID 
 DINTERO_WEBHOOK_SECRET=your_webhook_secret
 ```
 
@@ -92,6 +93,7 @@ DINTERO_CLIENT_ID=your_client_id
 DINTERO_CLIENT_SECRET=your_client_secret
 
 # Optional
+DINTERO_ACCOUNT_ID=your_account_id   # Account ID (T- prefix added automatically for sandbox)
 DINTERO_TIMEOUT=30                   # Request timeout in seconds
 DINTERO_RETRY_ATTEMPTS=3             # Number of retry attempts
 DINTERO_LOG_REQUESTS=false           # Log API requests
@@ -105,6 +107,7 @@ DINTERO_DEFAULT_CURRENCY=NOK         # Default currency
 $config = [
     'environment' => 'sandbox',
     'api_key' => 'your_api_key',
+    'account_id' => 'your_account_id',
     'timeout' => 30,
     'retry_attempts' => 3,
     'log_requests' => true,

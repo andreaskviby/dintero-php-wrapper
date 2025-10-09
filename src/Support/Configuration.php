@@ -49,6 +49,28 @@ class Configuration
         return $this->get('client_secret');
     }
 
+    public function getAccountId(): ?string
+    {
+        return $this->get('account_id');
+    }
+
+    public function getEffectiveAccountId(): ?string
+    {
+        $accountId = $this->getAccountId();
+        
+        if (!$accountId) {
+            return null;
+        }
+        
+        // For sandbox environment, ensure account ID has T- prefix
+        if ($this->isSandbox()) {
+            return str_starts_with($accountId, 'T-') ? $accountId : 'T-' . $accountId;
+        }
+        
+        // For production, remove T- prefix if present
+        return str_starts_with($accountId, 'T-') ? substr($accountId, 2) : $accountId;
+    }
+
     public function getBaseUrl(): string
     {
         return $this->get('base_url');
@@ -76,8 +98,8 @@ class Configuration
             'api_key' => env('DINTERO_API_KEY'),
             'client_id' => env('DINTERO_CLIENT_ID'),
             'client_secret' => env('DINTERO_CLIENT_SECRET'),
+            'account_id' => env('DINTERO_ACCOUNT_ID'),
             'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1'),
-            'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1'),
             'timeout' => env('DINTERO_TIMEOUT', 30),
             'retry_attempts' => env('DINTERO_RETRY_ATTEMPTS', 3),
             'retry_delay' => env('DINTERO_RETRY_DELAY', 1000), // milliseconds
@@ -95,11 +117,6 @@ class Configuration
         
         if (!in_array($environment, ['production', 'sandbox'])) {
             throw new ConfigurationException('Environment must be either "production" or "sandbox"');
-        }
-
-        // Set the correct base URL based on environment
-        if ($environment === 'sandbox') {
-            $this->set('base_url', $this->get('sandbox_base_url'));
         }
 
         // Validate required credentials

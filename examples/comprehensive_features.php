@@ -8,6 +8,7 @@ use Dintero\DinteroClient;
 $dintero = new DinteroClient([
     'environment' => 'sandbox',
     'api_key' => 'your_api_key_here',
+    'account_id' => 'your_account_id', // Optional: Account ID (T- prefix added automatically for sandbox)
 ]);
 
 echo "=== Comprehensive Dintero PHP Wrapper Examples ===\n\n";

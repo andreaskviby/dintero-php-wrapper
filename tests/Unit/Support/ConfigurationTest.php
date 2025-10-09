@@ -59,13 +59,79 @@ class ConfigurationTest extends TestCase
         ]);
     }
 
-    public function test_sets_correct_base_url_for_sandbox()
+    public function test_uses_production_base_url_for_all_environments()
     {
+        $sandboxConfig = new Configuration([
+            'environment' => 'sandbox',
+            'api_key' => 'test_key',
+        ]);
+
+        $productionConfig = new Configuration([
+            'environment' => 'production',
+            'api_key' => 'test_key',
+        ]);
+
+        $this->assertEquals('https://api.dintero.com/v1', $sandboxConfig->getBaseUrl());
+        $this->assertEquals('https://api.dintero.com/v1', $productionConfig->getBaseUrl());
+    }
+
+    public function test_account_id_functionality()
+    {
+        // Test without account ID
         $config = new Configuration([
             'environment' => 'sandbox',
             'api_key' => 'test_key',
         ]);
 
-        $this->assertStringContains('sandbox', $config->getBaseUrl());
+        $this->assertNull($config->getAccountId());
+        $this->assertNull($config->getEffectiveAccountId());
+    }
+
+    public function test_sandbox_account_id_gets_t_prefix()
+    {
+        $config = new Configuration([
+            'environment' => 'sandbox',
+            'api_key' => 'test_key',
+            'account_id' => 'ACCOUNT123',
+        ]);
+
+        $this->assertEquals('ACCOUNT123', $config->getAccountId());
+        $this->assertEquals('T-ACCOUNT123', $config->getEffectiveAccountId());
+    }
+
+    public function test_sandbox_account_id_keeps_existing_t_prefix()
+    {
+        $config = new Configuration([
+            'environment' => 'sandbox',
+            'api_key' => 'test_key',
+            'account_id' => 'T-ACCOUNT123',
+        ]);
+
+        $this->assertEquals('T-ACCOUNT123', $config->getAccountId());
+        $this->assertEquals('T-ACCOUNT123', $config->getEffectiveAccountId());
+    }
+
+    public function test_production_account_id_removes_t_prefix()
+    {
+        $config = new Configuration([
+            'environment' => 'production',
+            'api_key' => 'test_key',
+            'account_id' => 'T-ACCOUNT123',
+        ]);
+
+        $this->assertEquals('T-ACCOUNT123', $config->getAccountId());
+        $this->assertEquals('ACCOUNT123', $config->getEffectiveAccountId());
+    }
+
+    public function test_production_account_id_without_t_prefix()
+    {
+        $config = new Configuration([
+            'environment' => 'production',
+            'api_key' => 'test_key',
+            'account_id' => 'ACCOUNT123',
+        ]);
+
+        $this->assertEquals('ACCOUNT123', $config->getAccountId());
+        $this->assertEquals('ACCOUNT123', $config->getEffectiveAccountId());
     }
 }

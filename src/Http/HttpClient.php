@@ -105,6 +105,12 @@ class HttpClient implements HttpClientInterface
             $headers['Authorization'] = 'Bearer ' . $this->accessToken;
         }
 
+        // Add account ID header if configured
+        $accountId = $this->config->getEffectiveAccountId();
+        if ($accountId) {
+            $headers['Dintero-Account-Id'] = $accountId;
+        }
+
         return $headers;
     }
 
