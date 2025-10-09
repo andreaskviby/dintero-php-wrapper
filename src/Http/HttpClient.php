@@ -145,7 +145,15 @@ class HttpClient implements HttpClientInterface
             }
         }
 
-        $message = $errorData['message'] ?? $errorData['error'] ?? $e->getMessage();
+        // Extract error message from Dintero's error format
+        $message = $e->getMessage();
+        if (isset($errorData['error']['message'])) {
+            $message = $errorData['error']['message'];
+        } elseif (isset($errorData['error']) && is_string($errorData['error'])) {
+            $message = $errorData['error'];
+        } elseif (isset($errorData['message'])) {
+            $message = $errorData['message'];
+        }
 
         match ($statusCode) {
             401 => throw new AuthenticationException($message, $statusCode, $e),
