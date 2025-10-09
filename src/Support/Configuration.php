@@ -76,8 +76,8 @@ class Configuration
             'api_key' => env('DINTERO_API_KEY'),
             'client_id' => env('DINTERO_CLIENT_ID'),
             'client_secret' => env('DINTERO_CLIENT_SECRET'),
-            'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1'),
-            'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1'),
+            'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1/'),
+            'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1/'),
             'timeout' => env('DINTERO_TIMEOUT', 30),
             'retry_attempts' => env('DINTERO_RETRY_ATTEMPTS', 3),
             'retry_delay' => env('DINTERO_RETRY_DELAY', 1000), // milliseconds

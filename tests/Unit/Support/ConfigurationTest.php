@@ -68,4 +68,41 @@ class ConfigurationTest extends TestCase
 
         $this->assertStringContains('sandbox', $config->getBaseUrl());
     }
+
+    public function test_default_base_urls_have_trailing_slash()
+    {
+        $config = new Configuration([
+            'environment' => 'production',
+            'api_key' => 'test_key',
+        ]);
+
+        $baseUrl = $config->getBaseUrl();
+        $this->assertStringEndsWith('/', $baseUrl);
+        $this->assertEquals('https://api.dintero.com/v1/', $baseUrl);
+    }
+
+    public function test_sandbox_base_url_has_trailing_slash()
+    {
+        $config = new Configuration([
+            'environment' => 'sandbox',
+            'api_key' => 'test_key',
+        ]);
+
+        $baseUrl = $config->getBaseUrl();
+        $this->assertStringEndsWith('/', $baseUrl);
+        $this->assertEquals('https://api.sandbox.dintero.com/v1/', $baseUrl);
+    }
+
+    public function test_custom_base_url_preserves_trailing_slash()
+    {
+        $config = new Configuration([
+            'environment' => 'production',
+            'api_key' => 'test_key',
+            'base_url' => 'https://custom.api.com/v2/',
+        ]);
+
+        $baseUrl = $config->getBaseUrl();
+        $this->assertStringEndsWith('/', $baseUrl);
+        $this->assertEquals('https://custom.api.com/v2/', $baseUrl);
+    }
 }
