@@ -33,8 +33,6 @@ class HttpClient implements HttpClientInterface
             'timeout' => $config->get('timeout', 30),
             'headers' => [
                 'User-Agent' => $config->get('user_agent', 'Dintero PHP Wrapper/1.0'),
-                'Accept' => 'application/json',
-                'Content-Type' => 'application/json',
             ],
         ]);
     }
@@ -68,7 +66,7 @@ class HttpClient implements HttpClientInterface
     {
         $endpoint = ltrim($endpoint, '/');
         $options = array_merge($options, [
-            'headers' => $this->getHeaders(),
+            'headers' => array_merge($this->getHeaders(), $options['headers'] ?? []),
         ]);
 
         $retryAttempts = $this->config->get('retry_attempts', 3);
@@ -96,7 +94,10 @@ class HttpClient implements HttpClientInterface
 
     private function getHeaders(): array
     {
-        $headers = [];
+        $headers = [
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ];
 
         // Add authentication
         if ($this->config->getApiKey()) {
@@ -159,11 +160,21 @@ class HttpClient implements HttpClientInterface
         }
 
         try {
+            $authData = [
+                'grant_type' => 'client_credentials',
+                'client_id' => $this->config->getClientId(),
+                'client_secret' => $this->config->getClientSecret(),
+            ];
+            
+            // Add audience if configured
+            if ($this->config->getAudience()) {
+                $authData['audience'] = $this->config->getAudience();
+            }
+
             $response = $this->client->post('oauth/token', [
-                'json' => [
-                    'grant_type' => 'client_credentials',
-                    'client_id' => $this->config->getClientId(),
-                    'client_secret' => $this->config->getClientSecret(),
+                'json' => $authData,
+                'headers' => [
+                    'Content-Type' => 'application/json',
                 ],
             ]);
 
