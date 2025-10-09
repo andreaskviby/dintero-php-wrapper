@@ -14,7 +14,8 @@ class PaymentSessions extends BaseResource
      */
     public function create(array $data): array
     {
-        $response = $this->httpClient->post('/sessions', $this->prepareData($data));
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+        $response = $this->httpClient->requestWithBaseUrl('POST', '/sessions-profile', $checkoutBaseUrl, ['json' => $this->prepareData($data)]);
         return $response->json();
     }
 
@@ -23,7 +24,8 @@ class PaymentSessions extends BaseResource
      */
     public function get(string $sessionId): array
     {
-        $response = $this->httpClient->get("/sessions/{$sessionId}");
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+        $response = $this->httpClient->requestWithBaseUrl('GET', "/sessions-profile/{$sessionId}", $checkoutBaseUrl);
         return $response->json();
     }
 
@@ -32,7 +34,8 @@ class PaymentSessions extends BaseResource
      */
     public function update(string $sessionId, array $data): array
     {
-        $response = $this->httpClient->put("/sessions/{$sessionId}", $this->prepareData($data));
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+        $response = $this->httpClient->requestWithBaseUrl('PUT', "/sessions-profile/{$sessionId}", $checkoutBaseUrl, ['json' => $this->prepareData($data)]);
         return $response->json();
     }
 
@@ -41,7 +44,8 @@ class PaymentSessions extends BaseResource
      */
     public function cancel(string $sessionId): array
     {
-        $response = $this->httpClient->post("/sessions/{$sessionId}/cancel");
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+        $response = $this->httpClient->requestWithBaseUrl('POST', "/sessions-profile/{$sessionId}/cancel", $checkoutBaseUrl);
         return $response->json();
     }
 
@@ -50,7 +54,8 @@ class PaymentSessions extends BaseResource
      */
     public function capture(string $sessionId, array $data = []): array
     {
-        $response = $this->httpClient->post("/sessions/{$sessionId}/capture", $this->prepareData($data));
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+        $response = $this->httpClient->requestWithBaseUrl('POST', "/sessions-profile/{$sessionId}/capture", $checkoutBaseUrl, ['json' => $this->prepareData($data)]);
         return $response->json();
     }
 
@@ -59,7 +64,8 @@ class PaymentSessions extends BaseResource
      */
     public function getEvents(string $sessionId): array
     {
-        $response = $this->httpClient->get("/sessions/{$sessionId}/events");
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+        $response = $this->httpClient->requestWithBaseUrl('GET', "/sessions-profile/{$sessionId}/events", $checkoutBaseUrl);
         return $response->json();
     }
 
@@ -68,7 +74,8 @@ class PaymentSessions extends BaseResource
      */
     public function list(array $params = []): array
     {
-        $response = $this->httpClient->get('/sessions', $params);
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+        $response = $this->httpClient->requestWithBaseUrl('GET', '/sessions-profile', $checkoutBaseUrl, ['query' => $params]);
         return $response->json();
     }
 
@@ -77,7 +84,7 @@ class PaymentSessions extends BaseResource
      */
     public function all(array $params = []): \Generator
     {
-        return $this->paginate('/sessions', $params);
+        return $this->paginateWithCheckout('/sessions-profile', $params);
     }
 
     /**
@@ -98,5 +105,34 @@ class PaymentSessions extends BaseResource
         ];
 
         return $this->create($sessionData);
+    }
+
+    /**
+     * Paginate through all results using checkout API
+     */
+    protected function paginateWithCheckout(string $endpoint, array $params = []): \Generator
+    {
+        $page = 1;
+        $limit = $params['limit'] ?? 100;
+        $checkoutBaseUrl = $this->httpClient->getConfig()->getCheckoutBaseUrl();
+
+        do {
+            $response = $this->httpClient->requestWithBaseUrl('GET', $endpoint, $checkoutBaseUrl, [
+                'query' => array_merge($params, [
+                    'page' => $page,
+                    'limit' => $limit,
+                ])
+            ]);
+
+            $data = $response->json();
+            $items = $data['data'] ?? $data['items'] ?? [];
+
+            foreach ($items as $item) {
+                yield $item;
+            }
+
+            $hasMore = !empty($items) && count($items) === $limit;
+            $page++;
+        } while ($hasMore);
     }
 }

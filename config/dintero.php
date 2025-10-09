@@ -24,6 +24,7 @@ return [
     'api_key' => env('DINTERO_API_KEY'),
     'client_id' => env('DINTERO_CLIENT_ID'),
     'client_secret' => env('DINTERO_CLIENT_SECRET'),
+    'account_id' => env('DINTERO_ACCOUNT_ID'),
 
     /*
     |--------------------------------------------------------------------------
@@ -35,6 +36,8 @@ return [
     */
     'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1'),
     'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1'),
+    'checkout_base_url' => env('DINTERO_CHECKOUT_BASE_URL', 'https://checkout.dintero.com/v1'),
+    'checkout_sandbox_base_url' => env('DINTERO_CHECKOUT_SANDBOX_BASE_URL', 'https://checkout.sandbox.dintero.com/v1'),
 
     /*
     |--------------------------------------------------------------------------

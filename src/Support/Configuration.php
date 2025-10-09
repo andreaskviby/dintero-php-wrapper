@@ -49,6 +49,16 @@ class Configuration
         return $this->get('client_secret');
     }
 
+    public function getAccountId(): ?string
+    {
+        return $this->get('account_id');
+    }
+
+    public function getCheckoutBaseUrl(): string
+    {
+        return $this->get('checkout_base_url');
+    }
+
     public function getBaseUrl(): string
     {
         return $this->get('base_url');
@@ -76,8 +86,11 @@ class Configuration
             'api_key' => env('DINTERO_API_KEY'),
             'client_id' => env('DINTERO_CLIENT_ID'),
             'client_secret' => env('DINTERO_CLIENT_SECRET'),
+            'account_id' => env('DINTERO_ACCOUNT_ID'),
             'base_url' => env('DINTERO_BASE_URL', 'https://api.dintero.com/v1'),
             'sandbox_base_url' => env('DINTERO_SANDBOX_BASE_URL', 'https://api.sandbox.dintero.com/v1'),
+            'checkout_base_url' => env('DINTERO_CHECKOUT_BASE_URL', 'https://checkout.dintero.com/v1'),
+            'checkout_sandbox_base_url' => env('DINTERO_CHECKOUT_SANDBOX_BASE_URL', 'https://checkout.sandbox.dintero.com/v1'),
             'timeout' => env('DINTERO_TIMEOUT', 30),
             'retry_attempts' => env('DINTERO_RETRY_ATTEMPTS', 3),
             'retry_delay' => env('DINTERO_RETRY_DELAY', 1000), // milliseconds
@@ -100,6 +113,7 @@ class Configuration
         // Set the correct base URL based on environment
         if ($environment === 'sandbox') {
             $this->set('base_url', $this->get('sandbox_base_url'));
+            $this->set('checkout_base_url', $this->get('checkout_sandbox_base_url'));
         }
 
         // Validate required credentials

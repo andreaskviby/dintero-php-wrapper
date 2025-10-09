@@ -67,5 +67,37 @@ class ConfigurationTest extends TestCase
         ]);
 
         $this->assertStringContains('sandbox', $config->getBaseUrl());
+        $this->assertStringContains('sandbox', $config->getCheckoutBaseUrl());
+    }
+
+    public function test_account_id_configuration()
+    {
+        $config = new Configuration([
+            'environment' => 'sandbox',
+            'api_key' => 'test_key',
+            'account_id' => 'test_account_id',
+        ]);
+
+        $this->assertEquals('test_account_id', $config->getAccountId());
+    }
+
+    public function test_checkout_base_url_configuration()
+    {
+        $config = new Configuration([
+            'environment' => 'production',
+            'api_key' => 'test_key',
+        ]);
+
+        $this->assertEquals('https://checkout.dintero.com/v1', $config->getCheckoutBaseUrl());
+    }
+
+    public function test_checkout_sandbox_base_url_configuration()
+    {
+        $config = new Configuration([
+            'environment' => 'sandbox',
+            'api_key' => 'test_key',
+        ]);
+
+        $this->assertEquals('https://checkout.sandbox.dintero.com/v1', $config->getCheckoutBaseUrl());
     }
 }
